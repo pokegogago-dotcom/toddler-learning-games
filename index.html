@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toddler Reading Academy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Toddler Ultimate Academy</title>
     <style>
         :root {
             --primary: #FF6B6B;
@@ -15,177 +15,195 @@
         }
 
         body {
-            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
             background-color: var(--bg);
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            touch-action: manipulation;
+            height: 100vh;
             overflow: hidden;
+            touch-action: none; /* Prevents scrolling while drawing */
         }
 
         #game-container {
             background: white;
-            padding: 20px;
-            border-radius: 40px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            padding: 15px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             text-align: center;
-            width: 90%;
-            max-width: 800px;
-            border: 10px solid var(--accent);
+            width: 95%;
+            max-width: 900px;
+            height: 90vh;
+            border: 8px solid var(--accent);
+            display: flex;
+            flex-direction: column;
             position: relative;
         }
 
         .hidden { display: none !important; }
 
-        h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 10px; }
+        /* Menu */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
 
-        /* Menu Styles */
         .menu-btn {
             background: var(--secondary);
             color: white;
             border: none;
-            padding: 20px 30px;
+            padding: 25px;
             border-radius: 20px;
-            font-size: 1.5rem;
-            margin: 10px;
+            font-size: 1.4rem;
             cursor: pointer;
-            display: block;
-            width: 100%;
             box-shadow: 0 6px #38b2ac;
-            transition: 0.2s;
-        }
-        .menu-btn:active { transform: translateY(4px); box-shadow: 0 2px #38b2ac; }
-
-        /* Game Elements */
-        .big-emoji {
-            font-size: 8rem;
-            margin: 10px 0;
-            display: block;
-            animation: bounce 2s infinite;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .word-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .letter-slot {
-            width: 60px;
-            height: 80px;
-            border-bottom: 5px solid #eee;
+        /* Drawing Canvas Area */
+        #canvas-area {
+            flex-grow: 1;
             position: relative;
-            font-size: 3.5rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+            background: #fff;
+            border: 4px dashed #ddd;
+            border-radius: 20px;
+            margin: 10px 0;
+            cursor: crosshair;
         }
 
-        .hint-letter {
-            color: var(--hint);
+        #tracing-canvas {
             position: absolute;
-            pointer-events: none;
-            text-transform: uppercase;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
         }
 
-        .filled-letter {
-            color: var(--secondary);
-            transform: scale(0);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-transform: uppercase;
+        #ghost-letter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 25rem;
+            color: #f0f0f0;
+            font-weight: bold;
+            user-select: none;
+            z-index: 1;
         }
 
-        .is-filled .filled-letter { transform: scale(1); }
-        .is-filled { border-bottom-color: var(--secondary); }
-
-        /* Keyboard */
-        .keyboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
-            gap: 8px;
-            margin-top: 20px;
+        .big-emoji { font-size: 5rem; margin: 0; }
+        
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
         }
 
-        .key {
-            background: #f0f0f0;
-            border: 2px solid #ddd;
-            padding: 15px 5px;
-            border-radius: 10px;
-            font-size: 1.2rem;
+        .btn-small {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 15px;
             font-weight: bold;
             cursor: pointer;
         }
-
-        .key.correct { background: var(--secondary); color: white; border-color: #38b2ac; }
 
         #message {
             font-size: 1.5rem;
-            height: 2rem;
             color: var(--primary);
             font-weight: bold;
-            margin-bottom: 10px;
+            height: 2rem;
         }
 
-        .progress-bar {
-            height: 10px;
-            background: #eee;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            overflow: hidden;
+        /* Keyboard for Spelling Mode */
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            gap: 5px;
+            margin-top: 10px;
         }
-        #progress-fill { height: 100%; width: 0%; background: var(--secondary); transition: 0.5s; }
+        .key {
+            padding: 10px 2px;
+            font-size: 1rem;
+            background: #eee;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Bottom Word Slots */
+        .word-slots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .slot {
+            width: 40px;
+            height: 50px;
+            border-bottom: 4px solid #ddd;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        .active-slot { border-bottom-color: var(--primary); background: #fffdf0; }
     </style>
 </head>
 <body>
 
     <div id="game-container">
-        <!-- Main Menu -->
+        <!-- Home Menu -->
         <div id="menu">
-            <h1>🎒 Kiddo Learning</h1>
-            <button class="menu-btn" onclick="initGame('phonics')">1. Letter Sounds (Easy) 🍎</button>
-            <button class="menu-btn" style="background: var(--primary); box-shadow: 0 6px #d14d4d;" onclick="initGame('spelling')">2. Spell the Word (Hard) ✍️</button>
+            <h1>🌈 Toddler Academy</h1>
+            <div class="menu-grid">
+                <button class="menu-btn" onclick="startMode('alphabet')">🅰️ Trace the Alphabet (A-Z)</button>
+                <button class="menu-btn" style="background:#FF6B6B; box-shadow:0 6px #e65a5a" onclick="startMode('phonics')">🍎 Letter Sounds</button>
+                <button class="menu-btn" style="background:#FFD93D; color:#333; box-shadow:0 6px #e6c235" onclick="startMode('spelling')">✍️ Spelling & Tracing</button>
+            </div>
         </div>
 
         <!-- Game Interface -->
-        <div id="game-play" class="hidden">
-            <div class="progress-bar"><div id="progress-fill"></div></div>
-            <div id="message"></div>
-            <div id="emoji-display" class="big-emoji"></div>
-            <div id="word-slots" class="word-container"></div>
-            <div id="keyboard" class="keyboard"></div>
+        <div id="game-play" class="hidden" style="display: flex; flex-direction: column; height: 100%;">
+            <div id="message">Trace the letter!</div>
             
-            <button onclick="location.reload()" style="margin-top:20px; background:none; border:none; color:#999; cursor:pointer;">🏠 Back to Menu</button>
+            <div id="top-display">
+                <div id="emoji-icon" class="big-emoji"></div>
+                <div id="word-display" class="word-slots"></div>
+            </div>
+
+            <div id="canvas-area">
+                <div id="ghost-letter">A</div>
+                <canvas id="tracing-canvas"></canvas>
+            </div>
+
+            <div id="spelling-keyboard" class="keyboard hidden"></div>
+
+            <div class="controls">
+                <button class="btn-small" style="background:#999" onclick="location.reload()">🏠 Home</button>
+                <button class="btn-small" onclick="clearCanvas()">🧼 Clear</button>
+                <button class="btn-small" style="background:var(--secondary)" onclick="checkTrace()">✅ Done!</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const words = [
-            { w: 'DOG', e: '🐶', s: 'D' },
-            { w: 'CAT', e: '🐱', s: 'C' },
-            { w: 'SUN', e: '☀️', s: 'S' },
-            { w: 'BED', e: '🛏️', s: 'B' },
-            { w: 'FISH', e: '🐟', s: 'F' },
-            { w: 'BALL', e: '⚽', s: 'B' },
-            { w: 'DUCK', e: '🦆', s: 'D' },
-            { w: 'FROG', e: '🐸', s: 'F' },
-            { w: 'APPLE', e: '🍎', s: 'A' },
-            { w: 'HOUSE', e: '🏠', s: 'H' }
+        const library = [
+            { w: 'CAT', e: '🐱' }, { w: 'DOG', e: '🐶' }, { w: 'SUN', e: '☀️' },
+            { w: 'BED', e: '🛏️' }, { w: 'BOX', e: '📦' }, { w: 'ANT', e: '🐜' }
         ];
 
-        let gameMode = ''; // 'spelling' or 'phonics'
-        let currentIndex = 0;
-        let revealedIndices = [];
+        let mode = '';
+        let currentAlphaIndex = 0; // For A-Z mode
+        let currentWordIndex = 0;  // For Spelling mode
+        let currentLetterIndex = 0; // Which letter of the word we are tracing
+        
+        const canvas = document.getElementById('tracing-canvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
         const synth = window.speechSynthesis;
 
         function speak(text) {
@@ -195,129 +213,140 @@
             synth.speak(u);
         }
 
-        function initGame(mode) {
-            gameMode = mode;
+        function startMode(m) {
+            mode = m;
             document.getElementById('menu').classList.add('hidden');
             document.getElementById('game-play').classList.remove('hidden');
-            currentIndex = 0;
-            loadStage();
-            renderKeyboard();
+            
+            // Resize canvas to fit
+            const rect = document.getElementById('canvas-area').getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            if (mode === 'spelling') document.getElementById('spelling-keyboard').classList.remove('hidden');
+            
+            setupStage();
         }
 
-        function renderKeyboard() {
-            const kb = document.getElementById('keyboard');
-            kb.innerHTML = '';
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').forEach(l => {
-                const b = document.createElement('button');
-                b.className = 'key';
-                b.innerText = l;
-                b.onclick = () => handleInput(l);
-                kb.appendChild(b);
+        function setupStage() {
+            clearCanvas();
+            let letterToTrace = '';
+
+            if (mode === 'alphabet') {
+                letterToTrace = String.fromCharCode(65 + currentAlphaIndex);
+                document.getElementById('emoji-icon').innerText = '🔤';
+                document.getElementById('message').innerText = "Trace the letter!";
+                speak("Trace the letter " + letterToTrace);
+            } 
+            else if (mode === 'phonics') {
+                const data = library[currentWordIndex];
+                letterToTrace = data.w[0];
+                document.getElementById('emoji-icon').innerText = data.e;
+                document.getElementById('message').innerText = `"${letterToTrace}" is for ${data.w}`;
+                speak(`${letterToTrace} is for ${data.w}. Trace the ${letterToTrace}`);
+            }
+            else if (mode === 'spelling') {
+                const data = library[currentWordIndex];
+                letterToTrace = data.w[currentLetterIndex];
+                document.getElementById('emoji-icon').innerText = data.e;
+                renderWordSlots(data.w);
+                document.getElementById('message').innerText = `Spell ${data.w}`;
+                speak(`Trace the ${letterToTrace}`);
+            }
+
+            document.getElementById('ghost-letter').innerText = letterToTrace;
+        }
+
+        function renderWordSlots(word) {
+            const container = document.getElementById('word-display');
+            container.innerHTML = '';
+            word.split('').forEach((char, i) => {
+                const s = document.createElement('div');
+                s.className = `slot ${i === currentLetterIndex ? 'active-slot' : ''}`;
+                s.innerText = i < currentLetterIndex ? char : '';
+                container.appendChild(s);
             });
         }
 
-        function loadStage() {
-            const data = words[currentIndex];
-            revealedIndices = [];
-            const container = document.getElementById('word-slots');
-            container.innerHTML = '';
-            
-            document.getElementById('emoji-display').innerText = data.e;
-            document.getElementById('progress-fill').style.width = (currentIndex / words.length * 100) + '%';
-
-            if (gameMode === 'phonics') {
-                document.getElementById('message').innerText = `Find the letter "${data.s}"`;
-                speak(`${data.s} is for ${data.w}. Can you find the letter ${data.s}?`);
-                
-                // Show only the first letter as a hint
-                createSlot(data.s, 0);
-            } else {
-                document.getElementById('message').innerText = "Spell the word!";
-                speak(`How do you spell ${data.w}?`);
-                
-                // Show all letters as faint hints
-                data.w.split('').forEach((char, i) => createSlot(char, i));
-            }
+        // Canvas Drawing Logic
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
         }
 
-        function createSlot(char, index) {
-            const container = document.getElementById('word-slots');
-            const div = document.createElement('div');
-            div.className = 'letter-slot';
-            div.id = `slot-${index}`;
-            div.innerHTML = `<span class="hint-letter">${char}</span><span class="filled-letter">${char}</span>`;
-            div.onclick = () => handleInput(char); // Clicking the hint works too!
-            container.appendChild(div);
+        function startDrawing(e) { drawing = true; draw(e); }
+        function stopDrawing() { drawing = false; ctx.beginPath(); }
+        
+        function draw(e) {
+            if (!drawing) return;
+            const pos = getPos(e);
+            ctx.lineWidth = 20;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#4ECDC4';
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
         }
 
-        function handleInput(letter) {
-            const data = words[currentIndex];
-            
-            if (gameMode === 'phonics') {
-                if (letter === data.s) {
-                    revealSlot(0);
-                    success();
-                } else {
-                    speak("Try again!");
-                }
-            } else {
-                // Spelling mode logic
-                let found = false;
-                data.w.split('').forEach((char, i) => {
-                    if (char === letter && !revealedIndices.includes(i)) {
-                        revealSlot(i);
-                        found = true;
-                    }
-                });
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        window.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDrawing);
 
-                if (found) {
-                    speak(letter);
-                    if (revealedIndices.length === data.w.length) {
-                        success();
-                    }
-                } else {
-                    speak("Not that one");
-                }
-            }
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
-        function revealSlot(index) {
-            if (!revealedIndices.includes(index)) {
-                const slot = document.getElementById(`slot-${index}`);
-                if (slot) {
-                    slot.classList.add('is-filled');
-                    revealedIndices.push(index);
-                }
-            }
-        }
-
-        function success() {
-            const data = words[currentIndex];
-            document.getElementById('message').innerText = "🌟 GREAT JOB! 🌟";
-            speak("You got it! " + data.w);
+        function checkTrace() {
+            // In a real app, we would compare pixels, 
+            // but for a toddler, we celebrate their effort!
+            speak("Beautiful writing!");
+            document.getElementById('message').innerText = "🌟 AMAZING! 🌟";
             
             setTimeout(() => {
-                currentIndex++;
-                if (currentIndex < words.length) {
-                    loadStage();
-                } else {
-                    finishGame();
+                nextStep();
+            }, 1500);
+        }
+
+        function nextStep() {
+            if (mode === 'alphabet') {
+                currentAlphaIndex = (currentAlphaIndex + 1) % 26;
+            } 
+            else if (mode === 'phonics') {
+                currentWordIndex = (currentWordIndex + 1) % library.length;
+            }
+            else if (mode === 'spelling') {
+                currentLetterIndex++;
+                if (currentLetterIndex >= library[currentWordIndex].w.length) {
+                    currentLetterIndex = 0;
+                    currentWordIndex = (currentWordIndex + 1) % library.length;
+                    speak("You spelled the whole word!");
                 }
-            }, 2500);
+            }
+            setupStage();
         }
 
-        function finishGame() {
-            document.getElementById('emoji-display').innerText = '🏆';
-            document.getElementById('message').innerText = "YOU ARE A STAR!";
-            document.getElementById('word-slots').innerHTML = "<h2>All Done!</h2>";
-            speak("Congratulations! You finished all the words!");
-            setTimeout(() => location.reload(), 5000);
-        }
-
-        // Listen for real keyboard
-        window.addEventListener('keydown', (e) => {
-            const k = e.key.toUpperCase();
-            if (/^[A-Z]$/.test(k)) handleInput(k);
+        // Initialize Keyboard for Spelling
+        const kb = document.getElementById('spelling-keyboard');
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').forEach(l => {
+            const b = document.createElement('button');
+            b.className = 'key';
+            b.innerText = l;
+            b.onclick = () => {
+                const target = document.getElementById('ghost-letter').innerText;
+                if (l === target) {
+                    speak(l);
+                    checkTrace();
+                } else {
+                    speak("Try to find " + target);
+                }
+            };
+            kb.appendChild(b);
         });
     </script>
 </body>
