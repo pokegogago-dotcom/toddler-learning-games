@@ -14,7 +14,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Comic Sans MS', sans-serif;
             background-color: var(--bg);
             margin: 0;
             display: flex;
@@ -22,18 +22,18 @@
             align-items: center;
             height: 100vh;
             overflow: hidden;
-            touch-action: none;
+            touch-action: none; /* Critical for mobile */
         }
 
         #game-container {
             background: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             text-align: center;
-            width: 90%;
-            max-width: 600px;
-            height: 85vh;
+            width: 92%;
+            max-width: 500px;
+            height: 90vh;
             border: 8px solid var(--accent);
             display: flex;
             flex-direction: column;
@@ -42,99 +42,118 @@
 
         .hidden { display: none !important; }
 
-        /* Main Menu */
-        .menu-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+        /* Menu */
+        .menu-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
         .menu-btn {
             background: var(--secondary);
             color: white;
             border: none;
-            padding: 20px;
+            padding: 18px;
             border-radius: 20px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 6px #38b2ac;
+            box-shadow: 0 5px #38b2ac;
         }
 
-        /* Spelling & Phonics Styles */
-        .big-emoji { font-size: 6rem; margin: 10px 0; display: block; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        
-        .word-display { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+        /* Spelling/Phonics UI */
+        .big-emoji { font-size: 5rem; margin: 10px 0; }
+        .word-display { display: flex; justify-content: center; gap: 8px; margin: 15px 0; }
         .slot {
-            width: 50px; height: 60px; border-bottom: 5px solid #ddd;
-            font-size: 2.5rem; font-weight: bold; color: var(--secondary);
+            width: 45px; height: 55px; border-bottom: 4px solid #ddd;
+            font-size: 2rem; font-weight: bold; color: var(--secondary);
             position: relative; display: flex; align-items: center; justify-content: center;
         }
-        .hint-letter { color: rgba(0,0,0,0.05); position: absolute; }
+        .hint-letter { color: rgba(0,0,0,0.06); position: absolute; }
+        .keyboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(35px, 1fr)); gap: 4px; margin-top: auto; }
+        .key { padding: 10px 2px; background: #eee; border: 1px solid #ccc; border-radius: 6px; font-weight: bold; }
 
-        .keyboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)); gap: 5px; margin-top: auto; }
-        .key { padding: 12px 5px; background: #eee; border: 1px solid #ccc; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
-        /* Tracing Styles */
+        /* TRACING AREA ENHANCEMENTS */
         #tracing-area {
             flex-grow: 1;
             position: relative;
             background: #fff;
-            border: 3px dashed #ccc;
+            border: 2px solid #eee;
             border-radius: 20px;
-            margin: 15px 0;
+            margin: 10px 0;
+            overflow: hidden;
         }
-        #trace-canvas { position: absolute; top:0; left:0; width: 100%; height: 100%; z-index: 5; }
-        #dotted-guide {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 20rem; font-family: Arial, sans-serif; font-weight: bold;
-            color: white; text-shadow: 0 0 2px #ccc, 0 0 2px #ccc;
-            letter-spacing: 5px; opacity: 0.3;
-            user-select: none; z-index: 1;
-            /* Dotted effect simulating simple letters */
-            background-image: radial-gradient(#ccc 20%, transparent 20%);
-            background-position: 0 0;
-            background-size: 10px 10px;
-            -webkit-background-clip: text;
+        
+        #trace-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 10;
+            touch-action: none;
         }
 
-        #message { font-size: 1.5rem; color: var(--primary); font-weight: bold; height: 1.8rem; margin-bottom: 5px; }
-        .btn-row { display: flex; justify-content: center; gap: 10px; padding: 10px; }
-        .nav-btn { background: #999; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; }
+        /* High Visibility Dashed Guide */
+        #guide-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 22rem;
+            font-family: Arial, sans-serif;
+            font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 4px #555; /* Thick dark dashed outline */
+            stroke-dasharray: 20, 20; /* Creates the broken line effect */
+            user-select: none;
+            z-index: 1;
+            opacity: 0.4;
+        }
+
+        #message { font-size: 1.3rem; color: var(--primary); font-weight: bold; margin-bottom: 5px; }
+        
+        .btn-row { display: flex; justify-content: center; gap: 10px; margin-top: 5px; }
+        .nav-btn { background: #999; color: white; border: none; padding: 10px 15px; border-radius: 12px; cursor: pointer; }
+        
+        .next-btn {
+            background: var(--secondary);
+            color: white;
+            padding: 15px;
+            width: 100%;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            margin-bottom: 10px;
+            box-shadow: 0 4px #38b2ac;
+        }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <!-- Home Menu -->
     <div id="menu">
-        <h1 style="color:var(--primary)">🏠 Kids Play Lab</h1>
+        <h1 style="color:var(--primary); margin:0;">🌟 Fun Learning</h1>
         <div class="menu-grid">
-            <button class="menu-btn" onclick="startApp('phonics')">🍎 Letter Sounds (Input)</button>
-            <button class="menu-btn" style="background:var(--primary); box-shadow:0 6px #d45656" onclick="startApp('spelling')">🐝 Spelling Bee (Input)</button>
-            <button class="menu-btn" style="background:var(--accent); color:#333; box-shadow:0 6px #e6ce57" onclick="startApp('tracing')">✏️ Trace Letters (Draw)</button>
+            <button class="menu-btn" onclick="startApp('phonics')">🍎 Letter Sounds</button>
+            <button class="menu-btn" style="background:var(--primary); box-shadow:0 5px #d45656" onclick="startApp('spelling')">🐝 Spelling Bee</button>
+            <button class="menu-btn" style="background:#FFD93D; color:#333; box-shadow:0 5px #e6ce57" onclick="startApp('tracing')">✏️ Trace Letters (A-Z)</button>
         </div>
     </div>
 
-    <!-- Game Screen -->
     <div id="game-screen" class="hidden" style="display:flex; flex-direction:column; height:100%">
         <div id="message"></div>
 
-        <!-- Mode: Spelling/Phonics -->
         <div id="input-mode-ui" class="hidden">
             <div id="emoji-box" class="big-emoji"></div>
             <div id="slots-box" class="word-display"></div>
             <div id="kb-box" class="keyboard"></div>
         </div>
 
-        <!-- Mode: Tracing -->
         <div id="tracing-mode-ui" class="hidden" style="flex-grow:1; display:flex; flex-direction:column;">
             <div id="tracing-area">
-                <div id="dotted-guide">A</div>
+                <div id="guide-text">A</div>
                 <canvas id="trace-canvas"></canvas>
             </div>
-            <button class="menu-btn" style="background:var(--secondary); margin-bottom:10px" onclick="nextTracingLetter()">Next Letter! ✨</button>
+            <button class="next-btn" onclick="nextTrace()">Next Letter! ✨</button>
         </div>
 
         <div class="btn-row">
             <button class="nav-btn" onclick="location.reload()">Home</button>
-            <button class="nav-btn" style="background:var(--primary)" id="clear-btn" onclick="clearDraw()">Clear</button>
+            <button class="nav-btn" style="background:var(--primary)" onclick="clearCanvas()">Clear</button>
         </div>
     </div>
 </div>
@@ -142,182 +161,129 @@
 <script>
     const words = [
         {w: 'CAT', e: '🐱'}, {w: 'DOG', e: '🐶'}, {w: 'SUN', e: '☀️'}, 
-        {w: 'BED', e: '🛏️'}, {w: 'BOX', e: '📦'}, {w: 'FISH', e: '🐟'}
+        {w: 'BED', e: '🛏️'}, {w: 'FISH', e: '🐟'}
     ];
 
     let currentMode = '';
-    let currentIdx = 0;
+    let wordIdx = 0;
     let traceIdx = 0;
-    let revealedLetters = [];
-
+    const synth = window.speechSynthesis;
     const canvas = document.getElementById('trace-canvas');
     const ctx = canvas.getContext('2d');
-    let isDrawing = false;
-    let lastX = 0; let lastY = 0;
+    let drawing = false;
 
-    const synth = window.speechSynthesis;
     function speak(t) { if(synth.speaking) synth.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate=0.9; synth.speak(u); }
 
     function startApp(mode) {
         currentMode = mode;
         document.getElementById('menu').classList.add('hidden');
         document.getElementById('game-screen').classList.remove('hidden');
-        
         if(mode === 'tracing') {
             document.getElementById('tracing-mode-ui').classList.remove('hidden');
-            document.getElementById('clear-btn').classList.remove('hidden');
             resizeCanvas();
-            loadTraceLetter();
+            loadTrace();
         } else {
             document.getElementById('input-mode-ui').classList.remove('hidden');
-            document.getElementById('clear-btn').classList.add('hidden');
-            loadInputLevel();
-            buildKeyboard();
+            loadInput();
         }
     }
 
-    // --- SPELLING & PHONICS LOGIC ---
-    function loadInputLevel() {
-        const data = words[currentIdx];
-        revealedLetters = [];
+    // --- INPUT MODES ---
+    function loadInput() {
+        const data = words[wordIdx];
         document.getElementById('emoji-box').innerText = data.e;
-        const sBox = document.getElementById('slots-box');
-        sBox.innerHTML = '';
+        document.getElementById('slots-box').innerHTML = '';
+        document.getElementById('message').innerText = currentMode === 'phonics' ? "Find the start letter!" : "Spell the word!";
         
-        if(currentMode === 'phonics') {
-            document.getElementById('message').innerText = `Find the start letter!`;
-            speak(`Find the letter ${data.w[0]} for ${data.w}`);
-            createSlot(data.w[0], 0);
-        } else {
-            document.getElementById('message').innerText = `Spell the word!`;
-            speak(`How do you spell ${data.w}?`);
-            data.w.split('').forEach((l, i) => createSlot(l, i));
-        }
+        data.w.split('').forEach((l, i) => {
+            if(currentMode === 'phonics' && i > 0) return;
+            const s = document.createElement('div');
+            s.className = 'slot';
+            s.innerHTML = `<span class="hint-letter">${l}</span><span class="fill hidden">${l}</span>`;
+            document.getElementById('slots-box').appendChild(s);
+        });
+        buildKB();
     }
 
-    function createSlot(char, i) {
-        const s = document.createElement('div');
-        s.className = 'slot';
-        s.id = 'slot-' + i;
-        s.innerHTML = `<span class="hint-letter">${char}</span><span class="fill hidden" style="color:var(--secondary)">${char}</span>`;
-        s.onclick = () => handleInput(char);
-        document.getElementById('slots-box').appendChild(s);
-    }
-
-    function buildKeyboard() {
-        const box = document.getElementById('kb-box');
-        box.innerHTML = '';
+    function buildKB() {
+        const kb = document.getElementById('kb-box'); kb.innerHTML = '';
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').forEach(l => {
             const b = document.createElement('button');
-            b.className = 'key';
-            b.innerText = l;
-            b.onclick = () => handleInput(l);
-            box.appendChild(b);
+            b.className = 'key'; b.innerText = l;
+            b.onclick = () => {
+                speak(l);
+                const data = words[wordIdx].w;
+                const slots = document.querySelectorAll('.slot');
+                let filled = false;
+                slots.forEach(s => {
+                    if(s.querySelector('.hint-letter').innerText === l && s.querySelector('.fill').classList.contains('hidden')) {
+                        s.querySelector('.fill').classList.remove('hidden');
+                        s.querySelector('.fill').style.color = 'var(--secondary)';
+                        filled = true;
+                    }
+                });
+                
+                const allDone = Array.from(document.querySelectorAll('.fill')).every(f => !f.classList.contains('hidden'));
+                if(allDone) {
+                    speak("Great job!");
+                    setTimeout(() => { wordIdx = (wordIdx + 1) % words.length; loadInput(); }, 1500);
+                }
+            };
+            kb.appendChild(b);
         });
     }
 
-    function handleInput(l) {
-        const word = words[currentIdx].w;
-        if(currentMode === 'phonics') {
-            if(l === word[0]) { reveal(0); winLevel(); }
-            else speak("Try again!");
-        } else {
-            let found = false;
-            word.split('').forEach((char, i) => {
-                if(char === l && !revealedLetters.includes(i)) {
-                    reveal(i);
-                    found = true;
-                    if(revealedLetters.length === word.length) winLevel();
-                }
-            });
-            if(found) speak(l);
-        }
-    }
-
-    function reveal(i) {
-        const slot = document.getElementById('slot-' + i);
-        if(slot) {
-            slot.querySelector('.fill').classList.remove('hidden');
-            revealedLetters.push(i);
-        }
-    }
-
-    function winLevel() {
-        speak("Great job!");
-        document.getElementById('message').innerText = "🌟 YOU GOT IT! 🌟";
-        setTimeout(() => {
-            currentIdx = (currentIdx + 1) % words.length;
-            loadInputLevel();
-        }, 2000);
-    }
-
-    // --- TRACING LOGIC ---
-    function loadTraceLetter() {
-        const l = String.fromCharCode(65 + traceIdx);
-        document.getElementById('dotted-guide').innerText = l;
-        document.getElementById('message').innerText = `Trace the letter ${l}`;
-        speak(`Trace the letter ${l}`);
-        clearDraw();
-    }
-
-    function nextTracingLetter() {
-        traceIdx = (traceIdx + 1) % 26;
-        loadTraceLetter();
-    }
-
+    // --- TRACING ENGINE ---
     function resizeCanvas() {
         const area = document.getElementById('tracing-area');
         canvas.width = area.clientWidth;
         canvas.height = area.clientHeight;
     }
 
-    function getCoords(e) {
+    function loadTrace() {
+        const l = String.fromCharCode(65 + traceIdx);
+        document.getElementById('guide-text').innerText = l;
+        document.getElementById('message').innerText = `Trace the letter ${l}`;
+        speak(`Trace the letter ${l}`);
+        clearCanvas();
+    }
+
+    function nextTrace() {
+        traceIdx = (traceIdx + 1) % 26;
+        loadTrace();
+    }
+
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+    function getPos(e) {
         const rect = canvas.getBoundingClientRect();
-        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-        const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-        return {x, y};
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
     }
 
-    function startDraw(e) { 
-        isDrawing = true; 
-        const {x, y} = getCoords(e);
-        lastX = x; lastY = y;
-    }
-
-    function drawing(e) {
-        if(!isDrawing) return;
-        const {x, y} = getCoords(e);
+    // SNAPPING LOGIC: Pulls the line toward the center of the guide
+    function startDraw(e) { drawing = true; ctx.beginPath(); }
+    
+    function moveDraw(e) {
+        if(!drawing) return;
+        e.preventDefault();
+        const pos = getPos(e);
         
-        // Simple snapping/smoothing: draw thick round lines
-        ctx.strokeStyle = '#4ECDC4';
-        ctx.lineWidth = 25;
+        ctx.lineWidth = 22;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        
-        ctx.beginPath();
-        ctx.moveTo(lastX, lastY);
-        ctx.lineTo(x, y);
+        ctx.strokeStyle = '#4ECDC4';
+
+        ctx.lineTo(pos.x, pos.y);
         ctx.stroke();
-        
-        lastX = x; lastY = y;
     }
 
-    function stopDraw() { isDrawing = false; }
-    function clearDraw() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', drawing);
-    window.addEventListener('mouseup', stopDraw);
     canvas.addEventListener('touchstart', startDraw);
-    canvas.addEventListener('touchmove', drawing);
-    canvas.addEventListener('touchend', stopDraw);
-
-    // Keyboard support for spelling
-    window.addEventListener('keydown', (e) => {
-        const k = e.key.toUpperCase();
-        if(/^[A-Z]$/.test(k) && currentMode !== 'tracing') handleInput(k);
-    });
-
+    canvas.addEventListener('touchmove', moveDraw);
+    window.addEventListener('touchend', () => drawing = false);
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', moveDraw);
 </script>
 </body>
 </html>
