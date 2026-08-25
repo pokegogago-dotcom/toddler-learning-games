@@ -11,6 +11,7 @@
             --accent: #FFE66D;
             --bg: #F7FFF7;
             --text: #2F2F2F;
+            --snap-color: #FF5722;
         }
 
         * {
@@ -209,9 +210,9 @@
 <div id="game-container">
     <!-- Home Menu -->
     <div id="menu">
-        <h1>🌟 Kids Learning Fun for Maxen Jace</h1>
+        <h1>🌟 Kids Learning Fun</h1>
         <div class="menu-grid">
-            <button class="menu-btn" onclick="startMode('phonics')">🍎 Letter Sounds (Phonics)</button>
+            <button class="menu-btn" onclick="startMode('phonics')">🍎 Letter Sounds (Phonics) Jace Jace</button>
             <button class="menu-btn" style="background:var(--primary); box-shadow:0 5px #d45656" onclick="startMode('spelling')">🐝 Spelling Bee</button>
             <button class="menu-btn" style="background:#FFD93D; color:#333; box-shadow:0 5px #d8b41e" onclick="startMode('tracing')">✏️ Magic Letter Tracing (A-Z)</button>
         </div>
@@ -246,7 +247,7 @@
 
 <script>
     // Helper to generate smooth sampled arc curves
-    function makeArc(cx, cy, rx, ry, startAngleDeg, endAngleDeg, steps = 16) {
+    function makeArc(cx, cy, rx, ry, startAngleDeg, endAngleDeg, steps = 18) {
         const pts = [];
         const startRad = (startAngleDeg * Math.PI) / 180;
         const endRad = (endAngleDeg * Math.PI) / 180;
@@ -260,37 +261,35 @@
         return pts;
     }
 
-    // --- ACCURATE CURVED STROKE PATHS FOR A-Z (Normalized 0-100) ---
+    // --- ACCURATE PRE-SCHOOL CAPITAL LETTER PATHS (Normalized 0-100) ---
     const letterPaths = {
         'A': [[{x:50,y:15},{x:20,y:85}], [{x:50,y:15},{x:80,y:85}], [{x:32,y:58},{x:68,y:58}]],
-        'B': [[{x:30,y:15},{x:30,y:85}], makeArc(30, 32.5, 35, 17.5, -90, 90), makeArc(30, 67.5, 38, 17.5, -90, 90)],
-        'C': [makeArc(52, 50, 28, 35, 45, 315)],
-        'D': [[{x:30,y:15},{x:30,y:85}], makeArc(30, 50, 42, 35, -90, 90)],
-        'E': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:15},{x:75,y:15}], [{x:30,y:50},{x:65,y:50}], [{x:30,y:85},{x:75,y:85}]],
-        'F': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:15},{x:75,y:15}], [{x:30,y:50},{x:65,y:50}]],
-        'G': [makeArc(52, 50, 28, 35, 45, 315).concat([{x:75,y:55},{x:52,y:55}])],
-        'H': [[{x:30,y:15},{x:30,y:85}], [{x:70,y:15},{x:70,y:85}], [{x:30,y:50},{x:70,y:50}]],
-        'I': [[{x:50,y:15},{x:50,y:85}], [{x:35,y:15},{x:65,y:15}], [{x:35,y:85},{x:65,y:85}]],
-        'J': [[{x:65,y:15},{x:65,y:65}].concat(makeArc(45, 65, 20, 20, 0, 180))],
-        'K': [[{x:30,y:15},{x:30,y:85}], [{x:70,y:20},{x:30,y:52}], [{x:30,y:52},{x:72,y:85}]],
-        'L': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:85},{x:75,y:85}]],
-        'M': [[{x:25,y:85},{x:25,y:15}], [{x:25,y:15},{x:50,y:60}], [{x:50,y:60},{x:75,y:15}], [{x:75,y:15},{x:75,y:85}]],
-        'N': [[{x:30,y:85},{x:30,y:15}], [{x:30,y:15},{x:70,y:85}], [{x:70,y:85},{x:70,y:15}]],
-        'O': [makeArc(50, 50, 28, 35, -90, 270, 32)],
-        'P': [[{x:30,y:15},{x:30,y:85}], makeArc(30, 35, 38, 20, -90, 90)],
-        'Q': [makeArc(50, 50, 28, 35, -90, 270, 32), [{x:58,y:65},{x:78,y:85}]],
-        'R': [[{x:30,y:15},{x:30,y:85}], makeArc(30, 35, 38, 20, -90, 90), [{x:48,y:55},{x:75,y:85}]],
-        'S': [makeArc(50, 33, 22, 18, 45, 270).concat(makeArc(50, 67, 24, 18, -90, 135))],
-        'T': [[{x:50,y:15},{x:50,y:85}], [{x:25,y:15},{x:75,y:15}]],
-        'U': [makeArc(50, 60, 25, 25, 0, 180).reverse()],
-        'V': [[{x:25,y:15},{x:50,y:85}], [{x:50,y:85},{x:75,y:15}]],
+        'B': [[{x:28,y:15},{x:28,y:85}], makeArc(28, 32.5, 34, 17.5, -90, 90), makeArc(28, 67.5, 36, 17.5, -90, 90)],
+        'C': [makeArc(52, 50, 26, 35, -40, -320)],
+        'D': [[{x:28,y:15},{x:28,y:85}], makeArc(28, 50, 44, 35, -90, 90)],
+        'E': [[{x:28,y:15},{x:28,y:85}], [{x:28,y:15},{x:74,y:15}], [{x:28,y:50},{x:64,y:50}], [{x:28,y:85},{x:74,y:85}]],
+        'F': [[{x:28,y:15},{x:28,y:85}], [{x:28,y:15},{x:74,y:15}], [{x:28,y:50},{x:64,y:50}]],
+        'G': [makeArc(52, 50, 26, 35, -40, -320).concat([{x:74,y:52},{x:48,y:52}])],
+        'H': [[{x:28,y:15},{x:28,y:85}], [{x:72,y:15},{x:72,y:85}], [{x:28,y:50},{x:72,y:50}]],
+        'I': [[{x:50,y:15},{x:50,y:85}], [{x:34,y:15},{x:66,y:15}], [{x:34,y:85},{x:66,y:85}]],
+        'J': [[{x:68,y:15},{x:68,y:60}].concat(makeArc(48, 60, 20, 24, 0, 180))],
+        'K': [[{x:28,y:15},{x:28,y:85}], [{x:72,y:18},{x:28,y:52}], [{x:28,y:52},{x:74,y:85}]],
+        'L': [[{x:28,y:15},{x:28,y:85}], [{x:28,y:85},{x:74,y:85}]],
+        'M': [[{x:24,y:85},{x:24,y:15}], [{x:24,y:15},{x:50,y:58}], [{x:50,y:58},{x:76,y:15}], [{x:76,y:15},{x:76,y:85}]],
+        'N': [[{x:28,y:85},{x:28,y:15}], [{x:28,y:15},{x:72,y:85}], [{x:72,y:85},{x:72,y:15}]],
+        'O': [makeArc(50, 50, 27, 35, -90, 270, 32)],
+        'P': [[{x:28,y:15},{x:28,y:85}], makeArc(28, 33, 40, 18, -90, 90)],
+        'Q': [makeArc(50, 50, 27, 35, -90, 270, 32), [{x:58,y:64},{x:80,y:85}]],
+        'R': [[{x:28,y:15},{x:28,y:85}], makeArc(28, 33, 40, 18, -90, 90), [{x:48,y:51},{x:74,y:85}]],
+        'S': [makeArc(48, 32.5, 22, 17.5, -30, -270).concat(makeArc(48, 67.5, 24, 17.5, -90, 150))],
+        'T': [[{x:50,y:15},{x:50,y:85}], [{x:24,y:15},{x:76,y:15}]],
+        'U': [[{x:26,y:15},{x:26,y:58}].concat(makeArc(50, 58, 24, 27, 180, 0), [{x:74,y:58},{x:74,y:15}])],
+        'V': [[{x:24,y:15},{x:50,y:85}], [{x:50,y:85},{x:76,y:15}]],
         'W': [[{x:20,y:15},{x:32,y:85}], [{x:32,y:85},{x:50,y:40}], [{x:50,y:40},{x:68,y:85}], [{x:68,y:85},{x:80,y:15}]],
-        'X': [[{x:25,y:18},{x:75,y:82}], [{x:75,y:18},{x:25,y:82}]],
-        'Y': [[{x:25,y:15},{x:50,y:50}], [{x:75,y:15},{x:50,y:50}], [{x:50,y:50},{x:50,y:85}]],
-        'Z': [[{x:28,y:18},{x:72,y:18}], [{x:72,y:18},{x:28,y:82}], [{x:28,y:82},{x:72,y:82}]]
+        'X': [[{x:24,y:18},{x:76,y:82}], [{x:76,y:18},{x:24,y:82}]],
+        'Y': [[{x:24,y:15},{x:50,y:50}], [{x:76,y:15},{x:50,y:50}], [{x:50,y:50},{x:50,y:85}]],
+        'Z': [[{x:26,y:18},{x:74,y:18}], [{x:74,y:18},{x:26,y:82}], [{x:26,y:82},{x:74,y:82}]]
     };
-    // Polish U with vertical stalks
-    letterPaths['U'] = [[{x:25,y:15},{x:25,y:60}].concat(makeArc(50, 60, 25, 25, 180, 360), [{x:75,y:60},{x:75,y:15}])];
 
     // --- WORDS DATABASE ---
     const words = [
@@ -310,7 +309,7 @@
     let wordIdx = 0;
     let traceIdx = 0;
     let revealedSlots = [];
-    let isStageLocked = false; // Lock input during stage completion
+    let isStageLocked = false;
 
     const synth = window.speechSynthesis;
 
@@ -399,7 +398,7 @@
     }
 
     function handleLetterInput(char) {
-        if (isStageLocked) return; // Prevent freeze if child types during win animation
+        if (isStageLocked) return;
 
         const item = words[wordIdx];
 
@@ -414,7 +413,6 @@
                 speak(`Oops! Try looking for ${item.w[0]}`);
             }
         } else {
-            // Spelling Bee Mode
             let found = false;
             item.w.split('').forEach((l, idx) => {
                 if (l === char && !revealedSlots.includes(idx)) {
@@ -426,7 +424,7 @@
             if (found) {
                 speak(char);
                 if (revealedSlots.length === item.w.length) {
-                    isStageLocked = true; // Lock immediately on victory
+                    isStageLocked = true;
                     document.getElementById('message').innerText = `🎉 YOU DID IT! 🎉`;
                     const spelledSpaced = item.w.split('').join(' - ');
                     speak(`Awesome! ${spelledSpaced}, spells ${item.w}!`, () => {
