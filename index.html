@@ -11,7 +11,6 @@
             --accent: #FFE66D;
             --bg: #F7FFF7;
             --text: #2F2F2F;
-            --snap-color: #FF5722;
         }
 
         * {
@@ -246,6 +245,53 @@
 </div>
 
 <script>
+    // Helper to generate smooth sampled arc curves
+    function makeArc(cx, cy, rx, ry, startAngleDeg, endAngleDeg, steps = 16) {
+        const pts = [];
+        const startRad = (startAngleDeg * Math.PI) / 180;
+        const endRad = (endAngleDeg * Math.PI) / 180;
+        for (let i = 0; i <= steps; i++) {
+            const theta = startRad + (endRad - startRad) * (i / steps);
+            pts.push({
+                x: cx + rx * Math.cos(theta),
+                y: cy + ry * Math.sin(theta)
+            });
+        }
+        return pts;
+    }
+
+    // --- ACCURATE CURVED STROKE PATHS FOR A-Z (Normalized 0-100) ---
+    const letterPaths = {
+        'A': [[{x:50,y:15},{x:20,y:85}], [{x:50,y:15},{x:80,y:85}], [{x:32,y:58},{x:68,y:58}]],
+        'B': [[{x:30,y:15},{x:30,y:85}], makeArc(30, 32.5, 35, 17.5, -90, 90), makeArc(30, 67.5, 38, 17.5, -90, 90)],
+        'C': [makeArc(52, 50, 28, 35, 45, 315)],
+        'D': [[{x:30,y:15},{x:30,y:85}], makeArc(30, 50, 42, 35, -90, 90)],
+        'E': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:15},{x:75,y:15}], [{x:30,y:50},{x:65,y:50}], [{x:30,y:85},{x:75,y:85}]],
+        'F': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:15},{x:75,y:15}], [{x:30,y:50},{x:65,y:50}]],
+        'G': [makeArc(52, 50, 28, 35, 45, 315).concat([{x:75,y:55},{x:52,y:55}])],
+        'H': [[{x:30,y:15},{x:30,y:85}], [{x:70,y:15},{x:70,y:85}], [{x:30,y:50},{x:70,y:50}]],
+        'I': [[{x:50,y:15},{x:50,y:85}], [{x:35,y:15},{x:65,y:15}], [{x:35,y:85},{x:65,y:85}]],
+        'J': [[{x:65,y:15},{x:65,y:65}].concat(makeArc(45, 65, 20, 20, 0, 180))],
+        'K': [[{x:30,y:15},{x:30,y:85}], [{x:70,y:20},{x:30,y:52}], [{x:30,y:52},{x:72,y:85}]],
+        'L': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:85},{x:75,y:85}]],
+        'M': [[{x:25,y:85},{x:25,y:15}], [{x:25,y:15},{x:50,y:60}], [{x:50,y:60},{x:75,y:15}], [{x:75,y:15},{x:75,y:85}]],
+        'N': [[{x:30,y:85},{x:30,y:15}], [{x:30,y:15},{x:70,y:85}], [{x:70,y:85},{x:70,y:15}]],
+        'O': [makeArc(50, 50, 28, 35, -90, 270, 32)],
+        'P': [[{x:30,y:15},{x:30,y:85}], makeArc(30, 35, 38, 20, -90, 90)],
+        'Q': [makeArc(50, 50, 28, 35, -90, 270, 32), [{x:58,y:65},{x:78,y:85}]],
+        'R': [[{x:30,y:15},{x:30,y:85}], makeArc(30, 35, 38, 20, -90, 90), [{x:48,y:55},{x:75,y:85}]],
+        'S': [makeArc(50, 33, 22, 18, 45, 270).concat(makeArc(50, 67, 24, 18, -90, 135))],
+        'T': [[{x:50,y:15},{x:50,y:85}], [{x:25,y:15},{x:75,y:15}]],
+        'U': [makeArc(50, 60, 25, 25, 0, 180).reverse()],
+        'V': [[{x:25,y:15},{x:50,y:85}], [{x:50,y:85},{x:75,y:15}]],
+        'W': [[{x:20,y:15},{x:32,y:85}], [{x:32,y:85},{x:50,y:40}], [{x:50,y:40},{x:68,y:85}], [{x:68,y:85},{x:80,y:15}]],
+        'X': [[{x:25,y:18},{x:75,y:82}], [{x:75,y:18},{x:25,y:82}]],
+        'Y': [[{x:25,y:15},{x:50,y:50}], [{x:75,y:15},{x:50,y:50}], [{x:50,y:50},{x:50,y:85}]],
+        'Z': [[{x:28,y:18},{x:72,y:18}], [{x:72,y:18},{x:28,y:82}], [{x:28,y:82},{x:72,y:82}]]
+    };
+    // Polish U with vertical stalks
+    letterPaths['U'] = [[{x:25,y:15},{x:25,y:60}].concat(makeArc(50, 60, 25, 25, 180, 360), [{x:75,y:60},{x:75,y:15}])];
+
     // --- WORDS DATABASE ---
     const words = [
         { w: 'DOG', e: '🐶' },
@@ -260,40 +306,11 @@
         { w: 'TREE', e: '🌳' }
     ];
 
-    // --- STROKE DEFINITIONS FOR A-Z TRACING (Normalized 0-100 Coordinates) ---
-    const letterPaths = {
-        'A': [[{x:50,y:15},{x:20,y:85}], [{x:50,y:15},{x:80,y:85}], [{x:32,y:58},{x:68,y:58}]],
-        'B': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:15},{x:65,y:15},{x:65,y:50},{x:30,y:50}], [{x:30,y:50},{x:70,y:50},{x:70,y:85},{x:30,y:85}]],
-        'C': [[{x:75,y:25},{x:40,y:15},{x:25,y:50},{x:40,y:85},{x:75,y:75}]],
-        'D': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:15},{x:75,y:50},{x:30,y:85}]],
-        'E': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:15},{x:75,y:15}], [{x:30,y:50},{x:65,y:50}], [{x:30,y:85},{x:75,y:85}]],
-        'F': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:15},{x:75,y:15}], [{x:30,y:50},{x:65,y:50}]],
-        'G': [[{x:75,y:25},{x:40,y:15},{x:25,y:50},{x:40,y:85},{x:75,y:85},{x:75,y:52},{x:55,y:52}]],
-        'H': [[{x:30,y:15},{x:30,y:85}], [{x:70,y:15},{x:70,y:85}], [{x:30,y:50},{x:70,y:50}]],
-        'I': [[{x:50,y:15},{x:50,y:85}], [{x:35,y:15},{x:65,y:15}], [{x:35,y:85},{x:65,y:85}]],
-        'J': [[{x:65,y:15},{x:65,y:70},{x:50,y:85},{x:30,y:75}]],
-        'K': [[{x:30,y:15},{x:30,y:85}], [{x:70,y:20},{x:30,y:52}], [{x:30,y:52},{x:72,y:85}]],
-        'L': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:85},{x:75,y:85}]],
-        'M': [[{x:25,y:85},{x:25,y:15}], [{x:25,y:15},{x:50,y:60}], [{x:50,y:60},{x:75,y:15}], [{x:75,y:15},{x:75,y:85}]],
-        'N': [[{x:30,y:85},{x:30,y:15}], [{x:30,y:15},{x:70,y:85}], [{x:70,y:85},{x:70,y:15}]],
-        'O': [[{x:50,y:15},{x:25,y:50},{x:50,y:85},{x:75,y:50},{x:50,y:15}]],
-        'P': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:15},{x:70,y:15},{x:70,y:50},{x:30,y:50}]],
-        'Q': [[{x:50,y:15},{x:25,y:50},{x:50,y:85},{x:75,y:50},{x:50,y:15}], [{x:60,y:65},{x:78,y:85}]],
-        'R': [[{x:30,y:15},{x:30,y:85}], [{x:30,y:15},{x:70,y:15},{x:70,y:50},{x:30,y:50}], [{x:48,y:50},{x:72,y:85}]],
-        'S': [[{x:70,y:25},{x:45,y:15},{x:30,y:35},{x:70,y:65},{x:55,y:85},{x:30,y:75}]],
-        'T': [[{x:50,y:15},{x:50,y:85}], [{x:25,y:15},{x:75,y:15}]],
-        'U': [[{x:30,y:15},{x:30,y:68},{x:50,y:85},{x:70,y:68},{x:70,y:15}]],
-        'V': [[{x:25,y:15},{x:50,y:85}], [{x:50,y:85},{x:75,y:15}]],
-        'W': [[{x:20,y:15},{x:32,y:85}], [{x:32,y:85},{x:50,y:40}], [{x:50,y:40},{x:68,y:85}], [{x:68,y:85},{x:80,y:15}]],
-        'X': [[{x:25,y:18},{x:75,y:82}], [{x:75,y:18},{x:25,y:82}]],
-        'Y': [[{x:25,y:15},{x:50,y:50}], [{x:75,y:15},{x:50,y:50}], [{x:50,y:50},{x:50,y:85}]],
-        'Z': [[{x:28,y:18},{x:72,y:18}], [{x:72,y:18},{x:28,y:82}], [{x:28,y:82},{x:72,y:82}]]
-    };
-
     let currentMode = '';
     let wordIdx = 0;
     let traceIdx = 0;
     let revealedSlots = [];
+    let isStageLocked = false; // Lock input during stage completion
 
     const synth = window.speechSynthesis;
 
@@ -310,7 +327,8 @@
     function goToMenu() {
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('menu').classList.remove('hidden');
-        if (synth.speaking) synth.cancel();
+        if (synth && synth.speaking) synth.cancel();
+        isStageLocked = false;
     }
 
     function startMode(mode) {
@@ -335,9 +353,10 @@
     }
 
     // ==========================================
-    // --- SPELLING & PHONICS ENGINE (VOICE+) ---
+    // --- SPELLING & PHONICS ENGINE ---
     // ==========================================
     function loadWordStage() {
+        isStageLocked = false;
         const item = words[wordIdx];
         revealedSlots = [];
         document.getElementById('emoji-box').innerText = item.e;
@@ -346,12 +365,10 @@
 
         if (currentMode === 'phonics') {
             document.getElementById('message').innerText = `Find the starting letter!`;
-            // Announce starting sound
             speak(`${item.w[0]} is for ${item.w}! Can you find the letter ${item.w[0]}?`);
             createSlot(item.w[0], 0);
         } else {
             document.getElementById('message').innerText = `Spell the word!`;
-            // Announce full word
             speak(`Look, it's a ${item.w}! Can you spell ${item.w}?`);
             item.w.split('').forEach((char, idx) => createSlot(char, idx));
         }
@@ -365,7 +382,6 @@
             <span class="hint-letter">${letter}</span>
             <span class="fill-letter">${letter}</span>
         `;
-        // Tapping the faint hint helps the child
         slot.onclick = () => handleLetterInput(letter);
         document.getElementById('slots-box').appendChild(slot);
     }
@@ -383,10 +399,13 @@
     }
 
     function handleLetterInput(char) {
+        if (isStageLocked) return; // Prevent freeze if child types during win animation
+
         const item = words[wordIdx];
-        
+
         if (currentMode === 'phonics') {
             if (char === item.w[0]) {
+                isStageLocked = true;
                 revealSlot(0);
                 speak(`Great job! ${char} is for ${item.w}!`, () => {
                     advanceStage();
@@ -407,7 +426,7 @@
             if (found) {
                 speak(char);
                 if (revealedSlots.length === item.w.length) {
-                    // Spelled the entire word!
+                    isStageLocked = true; // Lock immediately on victory
                     document.getElementById('message').innerText = `🎉 YOU DID IT! 🎉`;
                     const spelledSpaced = item.w.split('').join(' - ');
                     speak(`Awesome! ${spelledSpaced}, spells ${item.w}!`, () => {
@@ -424,7 +443,9 @@
         const slot = document.getElementById(`slot-${index}`);
         if (slot) {
             slot.classList.add('revealed');
-            revealedSlots.push(index);
+            if (!revealedSlots.includes(index)) {
+                revealedSlots.push(index);
+            }
         }
     }
 
@@ -432,10 +453,9 @@
         setTimeout(() => {
             wordIdx = (wordIdx + 1) % words.length;
             loadWordStage();
-        }, 1200);
+        }, 1000);
     }
 
-    // Listen to real physical keyboard
     window.addEventListener('keydown', (e) => {
         const k = e.key.toUpperCase();
         if (/^[A-Z]$/.test(k) && currentMode !== 'tracing') {
@@ -444,7 +464,7 @@
     });
 
     // ===============================================
-    // --- MAGIC SNAPPING & TRACING ENGINE ---
+    // --- MAGIC CURVED TRACING & SNAPPING ENGINE ---
     // ===============================================
     const canvas = document.getElementById('trace-canvas');
     const ctx = canvas.getContext('2d');
@@ -477,7 +497,6 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    // Render high-contrast thick dashed guide
     function renderDashedSVGGuide(letter) {
         svg.innerHTML = '';
         const strokes = letterPaths[letter] || [];
@@ -492,6 +511,7 @@
         });
 
         currentStrokeSegments.forEach(pts => {
+            if (pts.length === 0) return;
             let pathD = `M ${pts[0].x} ${pts[0].y}`;
             for (let i = 1; i < pts.length; i++) {
                 pathD += ` L ${pts[i].x} ${pts[i].y}`;
@@ -501,7 +521,7 @@
             path.setAttribute('d', pathD);
             path.setAttribute('stroke', '#333333');
             path.setAttribute('stroke-width', '16');
-            path.setAttribute('stroke-dasharray', '18, 14');
+            path.setAttribute('stroke-dasharray', '14, 12');
             path.setAttribute('stroke-linecap', 'round');
             path.setAttribute('stroke-linejoin', 'round');
             path.setAttribute('fill', 'none');
@@ -517,7 +537,6 @@
         return { x: clientX - rect.left, y: clientY - rect.top };
     }
 
-    // Distance from point to line segment
     function projectOntoSegment(p, v, w) {
         const l2 = (v.x - w.x)**2 + (v.y - w.y)**2;
         if (l2 === 0) return v;
@@ -526,9 +545,8 @@
         return { x: v.x + t * (w.x - v.x), y: v.y + t * (w.y - v.y) };
     }
 
-    // Smart Snapping: Find the closest guide stroke and lock to it
     function snapPoint(rawPt) {
-        const SNAP_RADIUS = 55; // Snapping magnet reach (pixels)
+        const SNAP_RADIUS = 50;
         let closestPt = rawPt;
         let minDistance = Infinity;
 
@@ -583,7 +601,6 @@
     function onPointerUp() {
         if (isDrawing) {
             isDrawing = false;
-            // Short supportive cheer
             speak("Good job!");
         }
     }
